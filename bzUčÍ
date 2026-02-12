@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>DOMOVINA · Memory Player ROUTER V1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  :root {
+    --bg-main: #f4f0eb;
+    --text-main: #2d221a;
+    --text-muted: #5e5146;
+    --btn-radius: 22px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:-apple-system, BlinkMacSystemFont, Helvetica, Arial;
+    background:radial-gradient(circle at top left,#f9f4ee,#eae2db);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .frame{
+    width:min(1100px,100% - 32px);
+    background:rgba(255,255,255,.9);
+    border-radius:28px;
+    box-shadow:0 18px 40px rgba(0,0,0,.16);
+    padding:26px 28px;
+  }
+  header{text-align:center}
+  header h1{text-transform:uppercase;letter-spacing:.06em}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px 20px;
+    margin-top:14px;
+  }
+  .btn{
+    border-radius:var(--btn-radius);
+    padding:18px 12px;
+    color:#fff;
+    font-weight:600;
+    box-shadow:0 8px 18px rgba(0,0,0,.18);
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+  .btn span{margin-bottom:6px;font-size:24px}
+  .primary{background:linear-gradient(135deg,#d6845d,#c96842)}
+  .secondary{background:linear-gradient(135deg,#b184cf,#9162b0)}
+  .screen{display:none}
+  .active{display:block}
+  .back{text-align:center;margin-top:18px;color:#5e5146;cursor:pointer}
+</style>
+</head>
+
+<body>
+
+
+<div class="frame">
+
+  <div id="home" class="screen active">
+
+    <header>
+      <h1>DOMOVINA · MEMORY PLAYER</h1>
+      <p>Vyber svět vzpomínek</p>
+    </header>
+
+    <div class="grid">
+      <div class="btn primary" onclick="openScreen('momenty')"><span>🎞</span>Rodinné momenty</div>
+      <div class="btn primary" onclick="openScreen('deti')"><span>👶</span>Děti & růst</div>
+      <div class="btn primary" onclick="openScreen('domovina')"><span>🏠</span>Život DOMOVINY</div>
+
+      <div class="btn secondary" onclick="openScreen('udalosti')"><span>🎥</span>Speciální události</div>
+      <div class="btn secondary" onclick="openScreen('poselstvi')"><span>🧬</span>Poselství & budoucnost</div>
+      <div class="btn secondary" onclick="openScreen('archiv')"><span>📚</span>Archiv & roky</div>
+    </div>
+  </div>
+
+  <div id="momenty" class="screen"><h2>🎞 Rodinné momenty</h2><p>Sem jednou napojíme alba / videa.</p><div class="back" onclick="goHome()">← zpět</div></div>
+  <div id="deti" class="screen"><h2>👶 Děti & růst</h2><p>Růstové etapy, fotky, gesta.</p><div class="back" onclick="goHome()">← zpět</div></div>
+  <div id="domovina" class="screen"><h2>🏠 Život DOMOVINY</h2><p>Každodenní život rodiny.</p><div class="back" onclick="goHome()">← zpět</div></div>
+  <div id="udalosti" class="screen"><h2>🎥 Speciální události</h2><p>Narozeniny, svátky, Vánoce.</p><div class="back" onclick="goHome()">← zpět</div></div>
+  <div id="poselstvi" class="screen"><h2>🧬 Poselství & budoucnost</h2><p>Moudrost, zprávy, vzkazy.</p><div class="back" onclick="goHome()">← zpět</div></div>
+  <div id="archiv" class="screen"><h2>📚 Archiv & roky</h2><p>Chronologický přehled.</p><div class="back" onclick="goHome()">← zpět</div></div>
+
+</div>
+
+<script>
+function openScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function goHome(){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('home').classList.add('active');
+}
+</script>
+
+</body>
+</html>
