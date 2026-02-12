@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DOMOVINA – Memory Player</title>
+  <link rel="preconnect" href="." />
+  <style>
+    :root{
+      --bg:#f4f5f7;
+      --panel:#ffffff;
+      --text:#1b1b1b;
+      --muted:#6b7280;
+      --bar:#1aa6a6;
+      --tileA:#d66c3e;
+      --tileB:#6b46c1;
+      --tileTxt:#ffffff;
+      --radius:18px;
+      --shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header{
+      position:sticky; top:0;
+      background: var(--bar);
+      color:#fff;
+      padding: 12px 16px;
+      display:flex; align-items:center; justify-content:space-between;
+      z-index:10;
+    }
+    header .left{display:flex; gap:10px; align-items:center;}
+    header .pill{
+      background: rgba(255,255,255,.16);
+      border: 1px solid rgba(255,255,255,.22);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      white-space:nowrap;
+    }
+    main{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 16px 26px;
+    }
+    .hero{
+      background: var(--panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 14px;
+      margin-top: 14px;
+    }
+    .title{
+      display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;
+    }
+    .title h1{
+      margin:0;
+      letter-spacing:.2px;
+      font-size: 28px;
+    }
+    .title .sub{
+      color: var(--muted);
+      font-size: 14px;
+      margin-top:6px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    @media (max-width: 680px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+    .tile{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 18px 18px;
+      border-radius: var(--radius);
+      color: var(--tileTxt);
+      text-decoration:none;
+      box-shadow: var(--shadow);
+      min-height: 88px;
+    }
+    .tile .lbl{
+      font-size: 18px;
+      font-weight: 650;
+      display:flex; align-items:center; gap:10px;
+    }
+    .tile .hint{
+      font-size: 12px;
+      opacity:.85;
+      margin-top: 6px;
+    }
+    .tile .chev{ font-size: 22px; opacity:.9; }
+    .tile.a{ background: var(--tileA); }
+    .tile.b{ background: var(--tileB); }
+    .kiosk{
+      margin-top: 12px;
+      display:flex;
+      justify-content:center;
+      color: var(--muted);
+      font-size: 13px;
+      gap: 8px;
+      align-items:center;
+    }
+    .kiosk a{ color: var(--bar); text-decoration:none; }
+    .kiosk a:hover{ text-decoration:underline; }
+
+    .panel{
+      margin-top: 14px;
+      background: var(--panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+    }
+    .panel h2{ margin: 0 0 8px 0; font-size: 16px; }
+    .dl{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:grid;
+      gap: 8px;
+    }
+    .dl a{
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      text-decoration:none;
+      color: var(--text);
+    }
+    .dl a:hover{ border-color: #cbd5e1; }
+    .dl .meta{ color: var(--muted); font-size: 12px; white-space:nowrap; }
+    footer{
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+      display:flex;
+      justify-content:space-between;
+      padding: 0 4px;
+    }
+    .status-dot{
+      display:inline-block;
+      width:8px;height:8px;border-radius:99px;
+      background:#fbbf24;
+      margin-right:6px;
+      vertical-align:middle;
+    }
+    .ok .status-dot{ background:#22c55e; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="left">
+      <div class="pill" id="nodePill">Bzučárna • Home Node</div>
+      <div class="pill" id="healthPill"><span class="status-dot"></span>offline</div>
+    </div>
+    <div class="pill" id="clockPill">—</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="title">
+        <h1 id="title">DOMOVINA – MEMORY PLAYER</h1>
+      </div>
+      <div class="sub" id="subtitle">Vyber svět vzpomínek.</div>
+
+      <div class="grid" id="tiles"></div>
+
+      <div class="kiosk">
+        <span id="footerLeft">Domovina kiosk • offline</span>
+        <span>•</span>
+        <span id="footerRight">Zvuk: OFF</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Downloads (offline archiv)</h2>
+      <div class="sub" style="margin-bottom:10px;color:#6b7280">
+        Soubory vlož do <code>/bzucarna/data/domovina/downloads</code> na Raspberry Pi (nginx je nabídne přes <code>/data/domovina/downloads/</code>).
+      </div>
+      <ul class="dl" id="downloads"></ul>
+    </section>
+
+    <footer>
+      <span>© Bzučárna • Domovina • offline</span>
+      <span id="build">build</span>
+    </footer>
+  </main>
+
+  <script src="./main.js"></script>
+</body>
+</html>
