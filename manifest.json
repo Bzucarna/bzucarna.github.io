@@ -1,0 +1,9 @@
+{
+  "title": "Bzučárna",
+  "subtitle": "Embedded C server • Linux • Raspberry",
+  "tiles": [
+    { "id": "uptime", "label": "Uptime", "emoji": "⏱", "href": "#" },
+    { "id": "load", "label": "Load Avg", "emoji": "🧠", "href": "#" },
+    { "id": "gpio", "label": "GPIO Control", "emoji": "🔌", "href": "#" }
+  ]
+}
