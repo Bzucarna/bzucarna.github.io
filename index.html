@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BZUČÁRNA – Memory Player</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f1115;
+      color: #f5f5f5;
+    }
+
+    header {
+      padding: 20px;
+      border-bottom: 1px solid #222;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 1px;
+    }
+
+    .sub {
+      opacity: 0.6;
+      font-size: 14px;
+    }
+
+    #tiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+      padding: 20px;
+    }
+
+    .tile {
+      background: #1a1d24;
+      padding: 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+      transition: 0.2s;
+      border: 1px solid #242833;
+    }
+
+    .tile:hover {
+      transform: translateY(-3px);
+      border-color: #3a7afe;
+    }
+
+    .emoji {
+      font-size: 28px;
+    }
+
+    .label {
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    footer {
+      padding: 20px;
+      font-size: 13px;
+      opacity: 0.5;
+      border-top: 1px solid #222;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      background: #222;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1 id="title">BZUČÁRNA – MEMORY PLAYER</h1>
+  <div class="sub" id="subtitle">Embedded C + Linux + 🐝</div>
+  <div class="pill" id="clock"></div>
+</header>
+
+<section id="tiles"></section>
+
+<footer>
+  bzucarna.github.io • build <span id="build"></span>
+</footer>
+
+<script>
+function el(tag, attrs = {}, children = []) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') e.className = v;
+    else if (k === 'html') e.innerHTML = v;
+    else e.setAttribute(k, v);
+  }
+  children.forEach(c => e.appendChild(c));
+  return e;
+}
+
+function renderTiles(tiles) {
+  const grid = document.getElementById('tiles');
+  grid.innerHTML = '';
+  tiles.forEach(t => {
+    const a = el('a', { class: 'tile', href: t.href || '#' }, [
+      el('div', { class: 'emoji', html: t.emoji || '•' }),
+      el('div', { class: 'label', html: t.label || t.id })
+    ]);
+    grid.appendChild(a);
+  });
+}
+
+async function loadManifest() {
+  try {
+    const res = await fetch('./manifest.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error();
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+function tickClock() {
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    d.toLocaleTimeString('cs-CZ');
+}
+
+(async () => {
+  tickClock();
+  setInterval(tickClock, 1000);
+
+  document.getElementById('build').textContent =
+    new Date().toISOString().slice(0,10);
+
+  const m = await loadManifest();
+  if (m) {
+    document.getElementById('title').textContent =
+      (m.title || '').toUpperCase();
+    document.getElementById('subtitle').textContent =
+      m.subtitle || '';
+    renderTiles(m.tiles || []);
+  } else {
+    renderTiles([
+      { id: 'demo1', label: 'Demo Tile', emoji: '🐝' },
+      { id: 'demo2', label: 'C Backend', emoji: '⚙️' }
+    ]);
+  }
+})();
+</script>
+
+</body>
+</html>
