@@ -1,3 +1,4 @@
+
 # bzucarna.github.io
 
 AUTORSKÁ LISTINA KNIHY BZUČÁRNY
@@ -20,3 +21,4 @@ odpovědnosti.
 Autor: Patrik Červinka
 Projekt: Bzučárna – Domovina
 Datum: 05.02.202
+
