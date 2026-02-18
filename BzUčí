@@ -173,7 +173,6 @@ header p{font-size:13px;color:var(--text-muted)}
   .children-layout{grid-template-columns:1fr}
 }
 </style>
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="frame">
@@ -278,7 +277,60 @@ header p{font-size:13px;color:var(--text-muted)}
   <div class="back" onclick="goHome()">← zpět</div>
 </div>
 
-</div>
+</<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Domovina</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="app" class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="dot" id="stateDot" aria-hidden="true"></div>
+        <div class="titles">
+          <div class="name" id="sysName">Domovina</div>
+          <div class="sub" id="sysMode">kiosk • offline</div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="pill" id="clock">--:--</div>
+        <button class="pill button" id="soundBtn" type="button" title="Zapnout/vypnout zvuk">
+          Zvuk: OFF
+        </button>
+      </div>
+    </header>
+
+    <section class="content">
+      <canvas id="viz" width="1280" height="720" aria-label="Vizualizace Domoviny"></canvas>
+
+      <div class="panel">
+        <div class="row">
+          <div class="k">Stav</div>
+          <div class="v" id="stateLabel">idle</div>
+        </div>
+        <div class="row">
+          <div class="k">Filtr</div>
+          <div class="v" id="filterLabel">Bzučárna filtr: ON</div>
+        </div>
+        <div class="row">
+          <div class="k">Zdroj</div>
+          <div class="v muted">Estetika není důkaz.</div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="muted" id="footerNote">DejaVuSans • kvaziperioda • klid</div>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>div>
 
 <script>
 const memoryData = {
@@ -470,20 +522,59 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+</body>
+</html>
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Domovina</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="app" class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="dot" id="stateDot" aria-hidden="true"></div>
+        <div class="titles">
+          <div class="name" id="sysName">Domovina</div>
+          <div class="sub" id="sysMode">kiosk • offline</div>
+        </div>
+      </div>
 
-<div id="domovina_fetch_notice"></div>
+      <div class="right">
+        <div class="pill" id="clock">--:--</div>
+        <button class="pill button" id="soundBtn" type="button" title="Zapnout/vypnout zvuk">
+          Zvuk: OFF
+        </button>
+      </div>
+    </header>
 
-<h2>Děti &amp; růst</h2>
-<div id="domovina_children"></div>
+    <section class="content">
+      <canvas id="viz" width="1280" height="720" aria-label="Vizualizace Domoviny"></canvas>
 
-<h2>Memoáry</h2>
-<div id="domovina_memoary"></div>
+      <div class="panel">
+        <div class="row">
+          <div class="k">Stav</div>
+          <div class="v" id="stateLabel">idle</div>
+        </div>
+        <div class="row">
+          <div class="k">Filtr</div>
+          <div class="v" id="filterLabel">Bzučárna filtr: ON</div>
+        </div>
+        <div class="row">
+          <div class="k">Zdroj</div>
+          <div class="v muted">Estetika není důkaz.</div>
+        </div>
+      </div>
+    </section>
 
-  <script src="router.js"></script>
+    <footer class="footer">
+      <div class="muted" id="footerNote">DejaVuSans • kvaziperioda • klid</div>
+    </footer>
+  </main>
 
-<h2>Poselství</h2>
-<div id="domovina_messages"></div>
-
-  <script src="messages.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
