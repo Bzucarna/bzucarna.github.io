@@ -1,0 +1,489 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>DOMOVINA · Memory Player ROUTER V4</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root {
+  --btn-radius:22px;
+  --bg-main:#f9f4ee;
+  --card-bg:#ffffffee;
+  --text-main:#2d221a;
+  --text-muted:#5e5146;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system, BlinkMacSystemFont, Arial;
+  background:radial-gradient(circle at top left,#f9f4ee,#e9e1da);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.frame{
+  width:min(1180px,100% - 28px);
+  background:var(--card-bg);
+  border-radius:28px;
+  box-shadow:0 20px 40px rgba(0,0,0,.18);
+  padding:26px 30px 30px;
+}
+header{text-align:center;margin-bottom:10px}
+header h1{text-transform:uppercase;letter-spacing:.06em;font-size:22px}
+header p{font-size:13px;color:var(--text-muted)}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px 20px;
+  margin-top:16px;
+}
+.btn{
+  padding:18px 12px;
+  border-radius:var(--btn-radius);
+  color:#fff;
+  text-align:center;
+  font-weight:600;
+  box-shadow:0 8px 18px rgba(0,0,0,.18);
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  font-size:14px;
+}
+.btn span.icon{font-size:22px;margin-bottom:4px}
+.primary{background:linear-gradient(135deg,#d6845d,#c96842)}
+.secondary{background:linear-gradient(135deg,#b184cf,#9162b0)}
+.info{background:linear-gradient(135deg,#8fa6c9,#6d87aa)}
+.section{display:none}
+.active{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.back{text-align:center;margin-top:18px;color:var(--text-muted);cursor:pointer;font-size:13px}
+.back:hover{text-decoration:underline}
+.subdesc{text-align:center;color:var(--text-muted);margin-top:8px;font-size:12px}
+
+/* Archiv layout */
+.archiv-layout{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:18px;
+  margin-top:14px;
+}
+.archiv-years{
+  background:#f1e7dd;
+  border-radius:18px;
+  padding:10px;
+}
+.year-btn{
+  width:100%;
+  padding:8px 10px;
+  margin-bottom:6px;
+  border-radius:16px;
+  border:none;
+  background:#e0d4c8;
+  color:var(--text-main);
+  font-weight:600;
+  cursor:pointer;
+  font-size:13px;
+  text-align:left;
+}
+.year-btn.active{background:#c96842;color:#fff}
+.timeline{
+  background:#f6efe8;
+  border-radius:18px;
+  padding:12px 14px;
+  max-height:310px;
+  overflow-y:auto;
+}
+.memory-card{
+  background:#ffffff;
+  border-radius:14px;
+  padding:8px 10px;
+  margin-bottom:8px;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+  font-size:13px;
+}
+.memory-card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:2px;
+}
+.memory-type{font-weight:600}
+.memory-section{font-size:11px;color:var(--text-muted)}
+.memory-note{font-size:12px;color:var(--text-main)}
+
+/* Děti & růst layout */
+.children-layout{
+  display:grid;
+  grid-template-columns:190px 200px 1fr;
+  gap:16px;
+  margin-top:14px;
+}
+.children-list{
+  background:#f1e7dd;
+  border-radius:18px;
+  padding:10px;
+}
+.child-btn{
+  width:100%;
+  padding:8px 10px;
+  margin-bottom:6px;
+  border-radius:16px;
+  border:none;
+  background:#e0d4c8;
+  color:var(--text-main);
+  font-weight:600;
+  cursor:pointer;
+  font-size:13px;
+  text-align:left;
+}
+.child-btn.active{background:#b184cf;color:#fff}
+.children-years{
+  background:#f3ebe2;
+  border-radius:18px;
+  padding:10px;
+}
+.child-year-btn{
+  width:100%;
+  padding:6px 8px;
+  margin-bottom:4px;
+  border-radius:14px;
+  border:none;
+  background:#ddd1c5;
+  color:var(--text-main);
+  font-size:12px;
+  cursor:pointer;
+  text-align:left;
+}
+.child-year-btn.active{background:#d6845d;color:#fff}
+.children-timeline{
+  background:#f6efe8;
+  border-radius:18px;
+  padding:12px 14px;
+  max-height:310px;
+  overflow-y:auto;
+}
+
+@media(max-width:980px){
+  .frame{padding:22px 18px 24px}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .archiv-layout{grid-template-columns:1fr}
+  .children-layout{grid-template-columns:1fr}
+}
+</style>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="frame">
+
+<div id="home" class="section active">
+  <header>
+    <h1>DOMOVINA · MEMORY PLAYER</h1>
+    <p>Vyber svět vzpomínek</p>
+  </header>
+  <div class="grid">
+    <div class="btn primary" onclick="openSection('momenty')"><span class="icon">🎞</span>Rodinné momenty</div>
+    <div class="btn primary" onclick="openSection('deti')"><span class="icon">👶</span>Děti &amp; růst</div>
+    <div class="btn primary" onclick="openSection('domovina')"><span class="icon">🏠</span>Život DOMOVINY</div>
+    <div class="btn secondary" onclick="openSection('udalosti')"><span class="icon">🎥</span>Speciální události</div>
+    <div class="btn secondary" onclick="openSection('poselstvi')"><span class="icon">🧬</span>Poselství &amp; budoucnost</div>
+    <div class="btn secondary" onclick="openSection('archiv')"><span class="icon">📚</span>Archiv &amp; roky</div>
+  </div>
+</div>
+
+<div id="momenty" class="section">
+  <header><h1>🎞 Rodinné momenty</h1><p>Vše krásné, spontánní a lidské.</p></header>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:12px">
+    <div class="btn info"><span class="icon">📷</span>Fotky</div>
+    <div class="btn info"><span class="icon">🎥</span>Videa</div>
+    <div class="btn info"><span class="icon">✨</span>Highlighty</div>
+    <div class="btn info"><span class="icon">📖</span>Příběhy</div>
+  </div>
+  <p class="subdesc">Struktura připravena – obsah doplníme podle reálných složek DOMOVINY.</p>
+  <div class="back" onclick="goHome()">← zpět</div>
+</div>
+
+<div id="deti" class="section">
+  <header><h1>👶 Děti &amp; růst</h1><p>Etapy, věk, pokroky – přehledně v čase.</p></header>
+  <div class="children-layout">
+    <div class="children-list">
+      <strong style="font-size:13px;color:var(--text-main)">Dítě</strong>
+      <button class="child-btn active" onclick="setChild('Nina')">🌸 Nina</button>
+      <button class="child-btn" onclick="setChild('Alex')">🚀 Alex</button>
+      <button class="child-btn" onclick="setChild('Sofinka')">🦋 Sofinka</button>
+      <button class="child-btn" onclick="setChild('Vsechny')">👨‍👩‍👧‍👦 Všechny děti</button>
+    </div>
+    <div class="children-years" id="childrenYears">
+      <!-- Roky vykreslí JS -->
+    </div>
+    <div class="children-timeline" id="childrenTimeline">
+      <!-- Milníky vykreslí JS -->
+    </div>
+  </div>
+  <p class="subdesc">Každá karta = rok + věk + konkrétní milník. Demo, jak bude DOMOVINA růst s dětmi.</p>
+  <div class="back" onclick="goHome()">← zpět</div>
+</div>
+
+<div id="domovina" class="section">
+  <header><h1>🏠 Život DOMOVINY</h1><p>Každodenní drobnosti, které tvoří celek.</p></header>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:12px">
+    <div class="btn info"><span class="icon">📷</span>Momentky</div>
+    <div class="btn info"><span class="icon">🎥</span>Životní záznamy</div>
+    <div class="btn info"><span class="icon">📖</span>Krátké příběhy</div>
+    <div class="btn info"><span class="icon">❤️</span>Emoční kotvy</div>
+  </div>
+  <p class="subdesc">Místo pro "obyčejné dny", které jsou ve skutečnosti nejdůležitější.</p>
+  <div class="back" onclick="goHome()">← zpět</div>
+</div>
+
+<div id="udalosti" class="section">
+  <header><h1>🎥 Speciální události</h1><p>Narozeniny, svátky, velké okamžiky.</p></header>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:12px">
+    <div class="btn info"><span class="icon">🎂</span>Oslavy</div>
+    <div class="btn info"><span class="icon">🎄</span>Vánoce</div>
+    <div class="btn info"><span class="icon">🎁</span>Výjimečné chvíle</div>
+    <div class="btn info"><span class="icon">💎</span>Nezapomenutelné</div>
+  </div>
+  <p class="subdesc">Jednou z toho bude krásná rodinná kronika.</p>
+  <div class="back" onclick="goHome()">← zpět</div>
+</div>
+
+<div id="poselstvi" class="section">
+  <header><h1>🧬 Poselství &amp; budoucnost</h1><p>Slova, vzkazy a myšlenky, které mají přesah.</p></header>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:12px">
+    <div class="btn info"><span class="icon">🎙️</span>Audio vzkazy</div>
+    <div class="btn info"><span class="icon">💌</span>Psané myšlenky</div>
+    <div class="btn info"><span class="icon">🎥</span>Video poselství</div>
+    <div class="btn info"><span class="icon">🧠</span>Moudrosti</div>
+  </div>
+  <p class="subdesc">Místo, které bude mít emocionální i časovou hloubku.</p>
+  <div class="back" onclick="goHome()">← zpět</div>
+</div>
+
+<div id="archiv" class="section">
+  <header><h1>📚 Archiv &amp; roky</h1><p>Chronologický přehled života – demo logika paměti.</p></header>
+  <div class="archiv-layout">
+    <div class="archiv-years">
+      <button class="year-btn" onclick="setYear(2022)">2022</button>
+      <button class="year-btn" onclick="setYear(2023)">2023</button>
+      <button class="year-btn active" onclick="setYear(2024)">2024</button>
+      <button class="year-btn" onclick="setYear(2025)">2025</button>
+      <button class="year-btn" onclick="setYear(2026)">2026</button>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+  <p class="subdesc">Skutečná DOMOVINA data půjdou do stejné struktury – tady je ukázka logiky a pocitu.</p>
+  <div class="back" onclick="goHome()">← zpět</div>
+</div>
+
+</div>
+
+<script>
+const memoryData = {
+  2022: [
+    {icon:'🎞', type:'Výlet', section:'Rodinné momenty', note:'První společný výlet po delší době – hodně smíchu.'},
+    {icon:'👶', type:'Milník', section:'Děti & růst', note:'První den ve školce.'}
+  ],
+  2023: [
+    {icon:'🎂', type:'Narozeniny', section:'Speciální události', note:'Oslava doma, atmosféra klidná, ale krásná.'},
+    {icon:'🏠', type:'Domov', section:'Život DOMOVINY', note:'Začátek projektu DOMOVINA v hlavě.'}
+  ],
+  2024: [
+    {icon:'🎥', type:'Video vzpomínka', section:'Rodinné momenty', note:'Krátký záznam obyčejného dne – ve skutečnosti nejhezčí.'},
+    {icon:'🧬', type:'Poselství', section:'Poselství & budoucnost', note:'První nahraný vzkaz do budoucna.'},
+    {icon:'📚', type:'Archivní práce', section:'Archiv & roky', note:'Začátek třídění rodinného archivu.'}
+  ],
+  2025: [
+    {icon:'💡', type:'DOMOVINA systém', section:'Život DOMOVINY', note:'Spuštění Memory Playeru · Router V3/V4.'},
+    {icon:'🎥', type:'GoPro momenty', section:'Rodinné momenty', note:'První testy záznamu pro budoucí generace.'}
+  ],
+  2026: [
+    {icon:'✨', type:'Budoucí příběhy', section:'–', note:'Rezervováno pro další kapitoly.'}
+  ]
+};
+
+const childrenData = {
+  Nina: {
+    2020: [
+      {icon:'👣', type:'První kroky', age:'1,5 roku', note:'Nejisté, ale odhodlané krůčky po obýváku.'}
+    ],
+    2021: [
+      {icon:'🗣️', type:'První věty', age:'2,5 roku', note:'Začíná spojovat slova do vět a vymýšlí vlastní výrazy.'}
+    ],
+    2022: [
+      {icon:'🎨', type:'Kreativita', age:'3,5 roku', note:'Objevuje kreslení, vlastní svět postaviček.'}
+    ],
+    2023: [
+      {icon:'🎒', type:'Školka', age:'4,5 roku', note:'Nové kamarádky, první konflikty i smíření.'}
+    ],
+    2024: [
+      {icon:'🌸', type:'Růst', age:'5,5 roku', note:'Silnější osobnost, víc otázek, hlubší vnímání světa.'}
+    ]
+  },
+  Alex: {
+    2021: [
+      {icon:'🚗', type:'Zájmy', age:'3 roky', note:'Autíčka, vlaky, všechno co jezdí a hýbe se.'}
+    ],
+    2022: [
+      {icon:'⚽', type:'Pohyb', age:'4 roky', note:'Začíná milovat míč, běh a soutěživost.'}
+    ],
+    2023: [
+      {icon:'🧠', type:'Otázky', age:'5 let', note:'Přichází období „proč“ na úplně všechno.'}
+    ]
+  },
+  Sofinka: {
+    2022: [
+      {icon:'👶', type:'Miminko v rodině', age:'0–1 rok', note:'Zvuky, úsměvy, první reakce na svět kolem.'}
+    ],
+    2023: [
+      {icon:'🦋', type:'Osobnost', age:'1–2 roky', note:'Začíná být vidět vlastní charakter a gesta.'}
+    ],
+    2024: [
+      {icon:'😂', type:'Smích', age:'2–3 roky', note:'Směje se věcem, kterým rozumí jen ona – a rodina.'}
+    ]
+  },
+  Vsechny: {
+    2024: [
+      {icon:'👨‍👩‍👧‍👦', type:'Společné chvíle', age:'', note:'Všichni pohromadě – společný výlet nebo večer doma.'}
+    ],
+    2025: [
+      {icon:'📸', type:'Společná fotka', age:'', note:'Rodinné foto pro DOMOVINU – vědomě uložené pro budoucnost.'}
+    ]
+  }
+};
+
+let currentYear = 2024;
+let currentChild = 'Nina';
+
+function openSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id === 'archiv'){
+    renderTimeline(currentYear);
+  }
+  if(id === 'deti'){
+    renderChildrenYears();
+    renderChildrenTimeline();
+  }
+}
+
+function goHome(){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('home').classList.add('active');
+}
+
+function setYear(year){
+  currentYear = year;
+  document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.year-btn').forEach(btn=>{
+    if(btn.textContent.trim()==String(year)){ btn.classList.add('active'); }
+  });
+  renderTimeline(year);
+}
+
+function renderTimeline(year){
+  const timeline = document.getElementById('timeline');
+  if(!timeline) return;
+  const items = memoryData[year] || [];
+  if(items.length === 0){
+    timeline.innerHTML = '<p style="font-size:13px;color:var(--text-muted);">Zatím žádné záznamy pro tento rok.</p>';
+    return;
+  }
+  timeline.innerHTML = items.map(item => `
+    <div class="memory-card">
+      <div class="memory-card-header">
+        <div class="memory-type">${item.icon} ${item.type}</div>
+        <div class="memory-section">${item.section}</div>
+      </div>
+      <div class="memory-note">${item.note}</div>
+    </div>
+  `).join('');
+}
+
+function setChild(child){
+  currentChild = child;
+  document.querySelectorAll('.child-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.child-btn').forEach(btn=>{
+    if(child === 'Vsechny'){
+      if(btn.textContent.indexOf('Všechny') !== -1){ btn.classList.add('active'); }
+    } else {
+      if(btn.textContent.indexOf(child) !== -1){ btn.classList.add('active'); }
+    }
+  });
+  renderChildrenYears();
+  renderChildrenTimeline();
+}
+
+function renderChildrenYears(){
+  const yearsContainer = document.getElementById('childrenYears');
+  yearsContainer.innerHTML = '';
+  const data = childrenData[currentChild] || {};
+  const years = Object.keys(data).map(y=>parseInt(y,10)).sort((a,b)=>a-b);
+  if(years.length === 0){
+    yearsContainer.innerHTML = '<p style="font-size:12px;color:var(--text-muted)">Zatím žádné roky.</p>';
+    return;
+  }
+  years.forEach((year,index)=>{
+    const btn = document.createElement('button');
+    btn.className = 'child-year-btn' + (index === years.length-1 ? ' active' : '');
+    btn.textContent = year + ' · ' + (year - 2019) + '. rok DOMOVINY';
+    btn.onclick = ()=>{
+      document.querySelectorAll('.child-year-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderChildrenTimeline(year);
+    };
+    yearsContainer.appendChild(btn);
+  });
+}
+
+function renderChildrenTimeline(yearParam){
+  const container = document.getElementById('childrenTimeline');
+  const data = childrenData[currentChild] || {};
+  const years = Object.keys(data).map(y=>parseInt(y,10)).sort((a,b)=>a-b);
+  const year = yearParam || (years.length ? years[years.length-1] : null);
+  if(!year){
+    container.innerHTML = '<p style="font-size:12px;color:var(--text-muted)">Zatím žádné milníky.</p>';
+    return;
+  }
+  const items = data[year] || [];
+  if(items.length === 0){
+    container.innerHTML = '<p style="font-size:12px;color:var(--text-muted)">V tomto roce nejsou zatím zapsané milníky.</p>';
+    return;
+  }
+  container.innerHTML = items.map(item => `
+    <div class="memory-card">
+      <div class="memory-card-header">
+        <div class="memory-type">${item.icon} ${item.type}</div>
+        <div class="memory-section">${year}${item.age ? ' · ' + item.age : ''}</div>
+      </div>
+      <div class="memory-note">${item.note}</div>
+    </div>
+  `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if(document.getElementById('archiv').classList.contains('active')){
+    renderTimeline(currentYear);
+  }
+});
+</script>
+
+
+<div id="domovina_fetch_notice"></div>
+
+<h2>Děti &amp; růst</h2>
+<div id="domovina_children"></div>
+
+<h2>Memoáry</h2>
+<div id="domovina_memoary"></div>
+
+  <script src="router.js"></script>
+
+<h2>Poselství</h2>
+<div id="domovina_messages"></div>
+
+  <script src="messages.js"></script>
+</body>
+</html>
